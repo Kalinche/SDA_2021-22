@@ -30,7 +30,7 @@ int binarySearch(vector<int> vec, int left, int right, int x)
 	return left - 1;
 }
 
-int Task1() {
+int Task() {
 
 	int n;
 	cin >> n;
