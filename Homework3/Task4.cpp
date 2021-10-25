@@ -95,7 +95,8 @@ int main() {
 
 	for (long i = 0; i < q; i++)
 	{
-		cout << findLengthOfSubsequence(numbers, requests[i], sums) << endl;
+		int n = findLengthOfSubsequence(numbers, requests[i], sums);
+		printf("%d\n", n);
 	}
 
 
