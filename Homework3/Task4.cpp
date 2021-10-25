@@ -77,7 +77,7 @@ int main() {
 	sort(numbers.begin(), numbers.end());
 
 	vector<long> sums;
-	int sum = 0;
+	long sum = 0;
 	for (long i = 0; i < n; i++)
 	{
 		sum += numbers[i];
