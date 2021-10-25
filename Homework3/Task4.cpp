@@ -5,49 +5,57 @@
 
 using namespace std;
 
-long binarySearchIndex(vector<long> vec, long start, long end, long x)
+long ternarySearchIndex(vector<long> vec, long start, long end, long x)
 {
 	if (start > end) {
 		return end;
 	}
 
-	long middle = (end + start) / 2;
+	long middle1 = (end + 2 * start) / 3;
+	long middle2 = (2 * end + start) / 3;
 
-	if (vec[middle] == x)
+	if (vec[middle1] == x)
 	{
-		return middle;
+		return middle1;
 	}
 
-	else if (vec[middle] > x)
+	if (vec[middle2] == x)
 	{
-		return binarySearchIndex(vec, start, middle - 1, x);
+		return middle2;
 	}
 
-	return binarySearchIndex(vec, middle + 1, end, x);
+	else if (vec[middle1] > x)
+	{
+		return ternarySearchIndex(vec, start, middle1 - 1, x);
+	}
+
+	else if (vec[middle2] > x)
+	{
+		return ternarySearchIndex(vec, middle1 + 1, middle2 - 1, x);
+	}
+
+	return ternarySearchIndex(vec, middle2 + 1, end, x);
 }
 
-long findLengthOfSubsequence(vector<long>& sequence, pair<long, long>& request)
+long findLengthOfSubsequence(vector<long>& sequence, pair<long, long>& request, vector<long> sums)
 {
 	long start = 0;
 	long end = sequence.size() - 1;
 
-	long pIndex = binarySearchIndex(sequence, start, end, request.second);
+	long sumLastIndex = ternarySearchIndex(sequence, start, end, request.second);
 
-	long sum = 0;
-	long num = 0;
-	for (long i = pIndex; i >= 0; i--)
+	long diff = sums[sumLastIndex] - request.first;
+
+	if (diff < 0)
 	{
-		sum += sequence[i];
-		num++;
-		if (sum > request.first)
-		{
-			num--;
-			break;
-		}
+		return sumLastIndex + 1;
 	}
 
-	return num;
+	long sumFirstIndex = ternarySearchIndex(sums, start, sumLastIndex, diff) + 1;
+
+	return sumLastIndex - sumFirstIndex;
 }
+
 
 int main() {
 
@@ -68,6 +76,14 @@ int main() {
 
 	sort(numbers.begin(), numbers.end());
 
+	vector<long> sums;
+	int sum = 0;
+	for (long i = 0; i < n; i++)
+	{
+		sum += numbers[i];
+		sums.push_back(sum);
+	}
+
 	vector<pair<long, long>> requests;
 	for (long i = 0; i < q; i++)
 	{
@@ -79,7 +95,7 @@ int main() {
 
 	for (long i = 0; i < q; i++)
 	{
-		cout << findLengthOfSubsequence(numbers, requests[i]) << endl;
+		cout << findLengthOfSubsequence(numbers, requests[i], sums) << endl;
 	}
 
 
