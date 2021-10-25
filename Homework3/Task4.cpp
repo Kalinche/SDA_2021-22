@@ -5,7 +5,7 @@
 
 using namespace std;
 
-long ternarySearchIndex(vector<long> vec, long start, long end, long x)
+long ternarySearchIndex(vector<long>& vec, long start, long end, long x)
 {
 	if (start > end) {
 		return end;
@@ -37,7 +37,7 @@ long ternarySearchIndex(vector<long> vec, long start, long end, long x)
 	return ternarySearchIndex(vec, middle2 + 1, end, x);
 }
 
-long findLengthOfSubsequence(vector<long>& sequence, pair<long, long>& request, vector<long> sums)
+long findLengthOfSubsequence(vector<long>& sequence, pair<long, long>& request, vector<long>& sums)
 {
 	long start = 0;
 	long end = sequence.size() - 1;
