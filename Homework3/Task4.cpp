@@ -37,12 +37,17 @@ long ternarySearchIndex(vector<long>& vec, long start, long end, long x)
 	return ternarySearchIndex(vec, middle2 + 1, end, x);
 }
 
-long findLengthOfSubsequence(vector<long>& sequence, pair<long, long>& request, vector<long>& sums)
+long findLengthOfSubsequence2(vector<long>& sequence, pair<long, long>& request, vector<long>& sums)
 {
 	long start = 0;
 	long end = sequence.size() - 1;
 
 	long sumLastIndex = ternarySearchIndex(sequence, start, end, request.second);
+
+	if (sumLastIndex == -1)
+	{
+		return 0;
+	}
 
 	long diff = sums[sumLastIndex] - request.first;
 
@@ -57,7 +62,7 @@ long findLengthOfSubsequence(vector<long>& sequence, pair<long, long>& request, 
 }
 
 
-int main() {
+int Task4() {
 
 	long n;
 	cin >> n;
@@ -95,7 +100,7 @@ int main() {
 
 	for (long i = 0; i < q; i++)
 	{
-		int n = findLengthOfSubsequence(numbers, requests[i], sums);
+		int n = findLengthOfSubsequence2(numbers, requests[i], sums);
 		printf("%d\n", n);
 	}
 
