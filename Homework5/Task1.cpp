@@ -15,10 +15,10 @@ const int CAP_LETTERS = 26;
 string ConvertString(const string& str)
 {
 
-	int size = str.size();
+	long size = str.size();
 	string newstr(size, 0);
 
-	for (int i = 0; i < size; i++)
+	for (long i = 0; i < size; i++)
 	{
 		if (str[i] >= '0' && str[i] <= '9')
 			newstr[i] = str[i] - '0';
@@ -33,12 +33,12 @@ string ConvertString(const string& str)
 
 
 //Collect all the indexes of every single char
-vector<vector<int>> CollectCharsIndexes(const string& str)
+vector<vector<long>> CollectCharsIndexes(const string& str)
 {
-	int size = str.length();
-	vector<vector<int>> charIndexes(63);
+	long size = str.length();
+	vector<vector<long>> charIndexes(63);
 
-	for (int i = 0; i < size; i++)
+	for (long i = 0; i < size; i++)
 	{
 		charIndexes[str[i]].push_back(i);
 	}
@@ -46,9 +46,10 @@ vector<vector<int>> CollectCharsIndexes(const string& str)
 	return charIndexes;
 }
 
-void PrintUniqueCharsIndexes(const vector<vector<int>>& indexes)
+void PrintUniqueCharsIndexes(const vector<vector<long>>& indexes)
 {
-	for (int i = 0; i < indexes.size(); i++)
+	long size = indexes.size();
+	for (long i = 0; i < size; i++)
 	{
 		if (indexes[i].size() == 1)
 			cout << indexes[i][0] << " ";
@@ -63,7 +64,7 @@ int Task1() {
 	//converting the chars into numbers between 0 and 63
 	string translatedStr = ConvertString(str);
 
-	vector<vector<int>> indexes = CollectCharsIndexes(translatedStr);
+	vector<vector<long>> indexes = CollectCharsIndexes(translatedStr);
 
 	PrintUniqueCharsIndexes(indexes);
 
