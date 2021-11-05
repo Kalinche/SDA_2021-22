@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -46,14 +47,29 @@ vector<vector<long>> CollectCharsIndexes(const string& str)
 	return charIndexes;
 }
 
-void PrintUniqueCharsIndexes(const vector<vector<long>>& indexes)
+vector<long> GetUniqueCharsIndexes(const vector<vector<long>>& indexes)
 {
-	long size = indexes.size();
-	for (long i = 0; i < size; i++)
+
+	vector<long> uniqueIndexes;
+
+	for (long i = 0; i < indexes.size(); i++)
 	{
 		if (indexes[i].size() == 1)
-			cout << indexes[i][0] << " ";
+			uniqueIndexes.push_back(indexes[i][0]);
 	}
+
+	return uniqueIndexes;
+}
+
+void PrintVector(vector<long> v)
+{
+
+	int size = v.size();
+	for (long i = 0; i < size; i++)
+	{
+		cout << v[i] << " ";
+	}
+
 }
 
 int Task1() {
@@ -66,7 +82,11 @@ int Task1() {
 
 	vector<vector<long>> indexes = CollectCharsIndexes(translatedStr);
 
-	PrintUniqueCharsIndexes(indexes);
+	vector<long> uniqueIndexes = GetUniqueCharsIndexes(indexes);
+
+	sort(uniqueIndexes.begin(), uniqueIndexes.end());
+
+	PrintVector(uniqueIndexes);
 
 	system("pause");
 	return 0;
