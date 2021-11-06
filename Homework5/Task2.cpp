@@ -1,10 +1,11 @@
 #include <iostream>
 #include <algorithm>
 #include <queue>
+#include <list>
 
 using namespace std;
 
-void InputAttacks2(queue<long>& att, const long& size)
+void InputAttacks(queue<long>& att, const long& size)
 {
 	long attack;
 
@@ -15,16 +16,16 @@ void InputAttacks2(queue<long>& att, const long& size)
 	}
 }
 
-void AddPosFighters2(queue<long>& att, queue<long>& pos)
+void AddPosFighters(queue<long>& att, list<long>& pos)
 {
 	while (!att.empty() && att.front() > 0)
 	{
-		pos.push(att.front());
+		pos.push_back(att.front());
 		att.pop();
 	}
 }
 
-void AddNegFighters2(queue<long>& att, queue<long>& neg)
+void AddNegFighters(queue<long>& att, queue<long>& neg)
 {
 	while (!att.empty() && att.front() < 0)
 	{
@@ -33,30 +34,30 @@ void AddNegFighters2(queue<long>& att, queue<long>& neg)
 	}
 }
 
-void Fight2(queue<long>& pos, queue<long>& neg)
+void Fight(list<long>& pos, queue<long>& neg)
 {
 
 	while (!pos.empty() && !neg.empty())
 	{
-		if (pos.front() > neg.front())
+		if (pos.back() > neg.front())
 		{
 			neg.pop();
 		}
 
-		else if (pos.front() < neg.front())
+		else if (pos.back() < neg.front())
 		{
-			pos.pop();
+			pos.pop_back();
 		}
 
 		else
 		{
 			neg.pop();
-			pos.pop();
+			pos.pop_back();
 		}
 	}
 }
 
-void PassNeg2(queue<long>& neg)
+void PassNeg(queue<long>& neg)
 {
 	while (!neg.empty())
 	{
@@ -65,18 +66,18 @@ void PassNeg2(queue<long>& neg)
 	}
 }
 
-void PassPos2(queue<long>& pos)
+void PassPos(list<long>& pos)
 {
 	while (!pos.empty())
 	{
 		cout << pos.front() << " ";
-		pos.pop();
+		pos.pop_front();
 	}
 }
 
-void PrintResults2(queue<long>& att)
+void PrintResults(queue<long>& att)
 {
-	queue<long> pos;
+	list<long> pos;
 	queue<long> neg;
 
 	bool hasPassed = 0;
@@ -84,21 +85,21 @@ void PrintResults2(queue<long>& att)
 	while (!att.empty())
 	{
 		if (att.front() > 0)
-			AddPosFighters2(att, pos);
+			AddPosFighters(att, pos);
 		else
-			AddNegFighters2(att, neg);
+			AddNegFighters(att, neg);
 
-		Fight2(pos, neg);
+		Fight(pos, neg);
 
 		if (pos.empty() && !neg.empty())
 		{
-			PassNeg2(neg);
+			PassNeg(neg);
 			hasPassed = 1;
 		}
 
 		else if (neg.empty() && att.empty() && !pos.empty())
 		{
-			PassPos2(pos);
+			PassPos(pos);
 			hasPassed = 1;
 		}
 	}
@@ -112,10 +113,9 @@ int Task2() {
 	cin >> nums;
 
 	queue<long> att;
-	InputAttacks2(att, nums);
+	InputAttacks(att, nums);
 
-	PrintResults2(att);
+	PrintResults(att);
 
-	system("pause");
 	return 0;
 }
