@@ -1,130 +1,54 @@
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
-struct Node {
-	long data;
-	struct Node* next;
-};
-
-void Append(Node** head, long data)
-{
-	Node* newNode = new Node();
-
-	newNode->data = data;
-	newNode->next = NULL;
-
-	if (*head == NULL)
-	{
-		*head = newNode;
-		return;
-	}
-
-	Node* current = *head;
-
-	while (current->next != NULL)
-	{
-		current = current->next;
-	}
-
-	current->next = newNode;
-	return;
-}
-void DeleteFirst(Node** head)
-{
-	Node* temp;
-	temp = *head;
-
-	if (*head != NULL)
-	{
-		*head = temp->next;
-		delete temp;
-	}
-}
-
-void DeleteNode(Node** head, long pos)
-{
-	if (*head == NULL)
-		return;
-
-	Node* current = *head;
-
-	if (pos == 0)
-	{
-		DeleteFirst(head);
-		return;
-	}
-
-	Node* previous = NULL;
-
-	for (int i = 0; i < pos; i++)
-	{
-		if (current->next != nullptr)
-		{
-			previous = current;
-			current = current->next;
-		}
-		else
-			return;
-	}
-	previous->next = current->next;
-	delete current;
-
-}
-
-void Input(Node** head, const long& players)
+void Input(vector<long>& sec, const long& players)
 {
 	long hunger = -1;
 	for (int i = 0; i < players; i++)
 	{
 		cin >> hunger;
-		Append(head, hunger);
+		sec.push_back(hunger);
 	}
 }
 
-long CountDays(Node** head, long& players)
-{
-	if (*head == NULL)
-		return 0;
-
-	bool hasElimination = 0;
+long CountDays(vector<long>& sec, const long& players) {
 	long days = 0;
+	bool hasElimination = 0;
+	long activePlayers = players;
 
 	do {
 
 		hasElimination = 0;
-		Node* current = *head;
-		int i = 1;
-
-		while (current != NULL && current->next != NULL)
+		for (long i = activePlayers - 1; i > 0; i--)
 		{
-			if (current->data < current->next->data)
-			{
-				current = current->next->next;
-				DeleteNode(head, i);
-				players--;
+			if (sec[i] > sec[i - 1]) {
+				sec.erase(sec.begin() + i);
+				activePlayers--;
 				hasElimination = 1;
 			}
-			else
-				current = current->next;
-			i++;
+
 		}
 
-		if (hasElimination == 1)
+		if (hasElimination)
 			days++;
+
 	} while (hasElimination != 0);
+
+	return days;
 }
 
-int main() {
+int Task4() {
+
 	long players;
 	cin >> players;
 
-	Node* head = NULL;
+	vector<long> sec;
 
-	Input(&head, players);
+	Input(sec, players);
 
-	cout << CountDays(&head, players);
-
+	cout << CountDays(sec, players);
 
 	system("pause");
 	return 0;
