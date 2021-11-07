@@ -41,17 +41,23 @@ long FintSumOfSubs(queue<long>& sequence, const long& subSize) {
 
 	queue<long> sub;
 	long sum = 0;
+	long min = LONG_MAX;
 
 	while (sequence.size() + sub.size() >= subSize)
 	{
 		while (sub.size() < subSize)
 		{
 			sub.push(sequence.front());
+			if (sequence.front() < min)
+				min = sequence.front();
 			sequence.pop();
 		}
 
-		sum += Min(sub);
+		sum += min;
+		long lastOut = sub.front();
 		sub.pop();
+		if (min == lastOut)
+			min = Min(sub);
 	}
 
 	return sum;
