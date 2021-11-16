@@ -1,92 +1,116 @@
 #include <iostream>
-#include <utility>
 #include <vector>
-#include <algorithm>
-
+#include <utility>
+#include <list>
 
 using namespace std;
 
 struct Dot {
-	long index;
 	pair<long, long> coords;
-
+	long left, right;
 	Dot();
+	Dot(const pair<long, long>& coords, const long& left, const long& right);
 };
 
 Dot::Dot()
-	: index(0)
-	, coords(0, 0)
+	: coords(0, 0)
+	, left(0)
+	, right(0)
 {
 }
 
-
-void Input(vector<Dot>& sequence, const long n)
+Dot::Dot(const pair<long, long>& coords, const long& left, const long& right)
+	: coords(coords)
+	, left(left)
+	, right(right)
 {
-	Dot root;
-	sequence.push_back(root);
-	long index = 0;
+}
 
-	for (int i = 0; i < n; i++)
+void SetCoords(vector<Dot>& sequence, const long i, const long x, const long y)
+{
+	if (i == -1)
 	{
-		Dot newIndex;
-
-		cin >> index;
-		if (index > 0)
-		{
-			newIndex.index = index;
-			newIndex.coords.first = sequence[i].coords.first - 1;
-			newIndex.coords.second = sequence[i].coords.second - 1;
-			sequence.push_back(newIndex);
-		}
-
-		cin >> index;
-		if (index > 0)
-		{
-			newIndex.index = index;
-			newIndex.coords.first = sequence[i].coords.first + 1;
-			newIndex.coords.second = sequence[i].coords.second - 1;
-			sequence.push_back(newIndex);
-		}
+		return;
 	}
 
+	sequence[i].coords.first = x;
+	sequence[i].coords.second = y;
+
+	long left = sequence[i].left;
+	long leftX = sequence[i].coords.first - 1;
+	long leftY = sequence[i].coords.second - 1;
+	SetCoords(sequence, left, leftX, leftY);
+
+	long right = sequence[i].right;
+	long rightX = sequence[i].coords.first + 1;
+	long rightY = sequence[i].coords.second - 1;
+	SetCoords(sequence, right, rightX, rightY);
 }
 
-void Print(vector<Dot>& sequence) {
-
-	long size = sequence.size();
-	for (int i = 0; i < size; i++)
+void View(vector<Dot>& sequence, long index, list<pair<Dot, long>>& view)
+{
+	if (index == -1)
 	{
-		Dot toBeShown = sequence[i];
-		while (i < size - 1
-			&& sequence[i].coords.first
-			== sequence[i + 1].coords.first)
-		{
-			i++;
-			if (sequence[i].coords.second > toBeShown.coords.second)
-				toBeShown = sequence[i];
-		}
-		cout << toBeShown.index << " ";
+		return;
+	}
+
+	pair<Dot, long> newPair(sequence[index], index);
+
+	if (sequence[index].coords.first < view.front().first.coords.first)
+	{
+		view.push_front(newPair);
+	}
+	else if (sequence[index].coords.first == view.front().first.coords.first &&
+		sequence[index].coords.second > view.front().first.coords.second)
+	{
+		view.pop_front();
+		view.push_front(newPair);
+	}
+	else if (sequence[index].coords.first > view.back().first.coords.first)
+	{
+		view.push_back(newPair);
+	}
+	else if (sequence[index].coords.first == view.back().first.coords.first &&
+		sequence[index].coords.second > view.back().first.coords.second)
+	{
+		view.pop_back();
+		view.push_back(newPair);
+	}
+
+	View(sequence, sequence[index].left, view);
+	View(sequence, sequence[index].right, view);
+}
+
+void PrintView(const list<pair<Dot, long>>& view)
+{
+	for (pair<Dot, long> dot : view)
+	{
+		cout << dot.second << " ";
 	}
 }
 
-bool CompareX(const Dot& coords1, const Dot& coords2)
+int Task3()
 {
-	return (coords1.coords.first < coords2.coords.first);
-}
-
-int Task2() {
-
 	long n;
 	cin >> n;
 
-	vector<Dot> sequence;
+	vector<Dot> sequence(n);
+	for (int i = 0; i < n; i++)
+	{
+		long left, right;
+		cin >> left >> right;
+		sequence[i].left = left;
+		sequence[i].right = right;
 
-	Input(sequence, n);
+	}
 
-	sort(sequence.begin(), sequence.end(), CompareX);
+	SetCoords(sequence, 0, 0, 0);
 
-	Print(sequence);
-
+	list < pair<Dot, long>> view;
+	pair<Dot, long> first(sequence[0], 0);
+	view.push_back(first);
+	View(sequence, 0, view);
+	PrintView(view);
 	system("pause");
 	return 0;
 }
