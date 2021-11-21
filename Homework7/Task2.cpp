@@ -4,44 +4,110 @@
 
 using namespace std;
 
-int minXOR(vector<int>& sequence, int& min)
+struct Node {
+	int key;
+	Node* left, * right;
+	Node();
+	Node(const int& key);
+};
+
+Node::Node()
+	:key(NULL)
+	, left(NULL)
+	, right(NULL)
 {
-	int length = sequence.size();
+}
 
+Node::Node(const int& key)
+	: key(key)
+	, left(NULL)
+	, right(NULL)
+{
+}
 
-	for (int j = 0; j < length - 1; j++)
+class BST {
+
+	Node* root;
+
+	Node* Insert(Node* current, const long& key, int neighbours[]);
+	int minXOR(int key, int neighbours[]);
+
+public:
+	BST();
+	BST(const long& key);
+
+	void Insert(const long& key, int neighbours[]);
+};
+
+void BST::Insert(const long& key, int neighbours[])
+{
+	root = Insert(root, key, neighbours);
+}
+
+BST::BST()
+{
+	root = new Node();
+}
+
+BST::BST(const long& key)
+{
+	root = new Node(key);
+}
+
+//insertion function returning reference to the new leaf
+Node* BST::Insert(Node* current, const long& key, int neighbours[])
+{
+	//Base
+	if (current == NULL)
 	{
-		int current = (sequence[j] ^ sequence[length - 1]);
-		if (current < min && current != 0)
-			min = current;
+		return new Node(key);
 	}
 
-	return min;
+	if (current->key < key)
+	{
+		neighbours[0] = current->key;
+		current->right = Insert(current->right, key, neighbours);
+	}
+
+	else if (current->key > key)
+	{
+		neighbours[1] = current->key;
+		current->left = Insert(current->left, key, neighbours);
+	}
+
+	return current;
 }
 
 int main() {
+
 	int q;
 	cin >> q;
 
-	vector<int> sequence = { 0 };
+	BST tree(0);
+
 	vector<int> mins;
 
 	int min = INT_MAX;
 
 	for (int i = 0; i < q; i++)
 	{
-		int current;
-		cin >> current;
+		int neighbours[2] = { -1, -1 };
+		int n;
+		cin >> n;
+		tree.Insert(n, neighbours);
 
-		if (count(sequence.begin(), sequence.end(), current))
+		if (neighbours[0] != -1 && min > (n ^ neighbours[0]))
 		{
-			sequence.push_back(current);
+			min = n ^ neighbours[0];
 		}
+		if (neighbours[1] != -1 && min > (n ^ neighbours[1]))
+			min = n ^ neighbours[1];
 
-		mins.push_back(minXOR(sequence, min));
+		mins.push_back(min);
 	}
 
 	int length = mins.size();
+
 	for (int i = 0; i < length; i++)
 	{
 		cout << mins[i] << endl;
@@ -49,3 +115,4 @@ int main() {
 
 	return 0;
 }
+
