@@ -5,13 +5,13 @@
 
 using namespace std;
 
-long Factorial(const long& n) {
+long Factorial2(const long& n) {
 	if (n == 0)
 		return 1;
-	return n * Factorial(n - 1);
+	return n * Factorial2(n - 1);
 }
 
-int main() {
+int Task2() {
 	long n, k;
 	cin >> n >> k;
 
@@ -62,7 +62,7 @@ int main() {
 		for (pair<long, long> y : ys)
 		{
 			if (y.second >= 3)
-				count += Factorial(y.second) / (6 * Factorial(y.second - 3));
+				count += Factorial2(y.second) / (6 * Factorial2(y.second - 3));
 		}
 	}
 
