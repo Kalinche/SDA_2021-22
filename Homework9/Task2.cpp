@@ -1,28 +1,18 @@
 #include <iostream>
 #include <map>
-#include <vector>
 #include <algorithm>
 
 using namespace std;
 
-long Factorial(const long& n) {
-	if (n == 0)
+long Factorial(const long& n, const long k) {
+	if (n == 0 || n == 1 || n == k)
 		return 1;
-	return n * Factorial(n - 1);
+	return n * Factorial(n - 1, k);
 }
 
 int main() {
 	long n, k;
 	cin >> n >> k;
-
-	vector<long> animals;
-
-	for (long i = 0; i < n; i++)
-	{
-		long weight;
-		cin >> weight;
-		animals.push_back(weight);
-	}
 
 	long count = 0;
 	map<long, long> counting;//index, current count
@@ -30,53 +20,46 @@ int main() {
 
 	if (k != 1)
 	{
-		for (long i = 0; i < animals.size(); i++)
+		for (long i = 0; i < n; i++)
 		{
-			if (counting.find(animals[i]) == counting.end())
+			long weight;
+			cin >> weight;
+			if (counting.find(weight) == counting.end())
 			{
-				counting.insert(make_pair(animals[i], 1));
-				ys.insert(make_pair(k * animals[i], 0));
+				counting.insert(make_pair(weight, 1));
+				ys.insert(make_pair(k * weight, 0));
 			}
 			else
 			{
-				counting[animals[i]]++;
+				counting[weight]++;
 			}
 
-			if (ys.find(animals[i]) != ys.end())
+			if (ys.find(weight) != ys.end() && weight % k == 0)
 			{
-				ys[animals[i]] += counting[animals[i] / k];
+				ys[weight] += counting[weight / k];
 			}
 
-			if (ys.find(animals[i] / k) != ys.end())
+			if (ys.find(weight / k) != ys.end() && weight % k == 0)
 			{
-				count += ys[animals[i] / k];
+				count += ys[weight / k];
 			}
 		}
 	}
 
 	else {
-		for (long i = 0; i < animals.size(); i++) {
-			if (counting.find(animals[i]) == counting.end())
-			{
-				counting.insert(make_pair(animals[i], 1));
-				ys.insert(make_pair(k * animals[i], 0));
-			}
-			else
-			{
-				counting[animals[i]]++;
-			}
-
-			if (ys.find(animals[i]) != ys.end())
-			{
-				ys[animals[i]]++;
-			}
+		for (long i = 0; i < n; i++)
+		{
+			long weight;
+			cin >> weight;
+			counting[weight]++;
 		}
 
+		for (auto number : counting)
 		{
-			for (pair<long, long> y : ys)
+			if (number.second > 2)
 			{
-				if (y.second >= 3)
-					count += (Factorial(y.second) / (6 * Factorial(y.second - 3)));
+				long res = Factorial(number.second, number.second - 3) / 6;
+				count += res;
 			}
 		}
 	}
